@@ -51,19 +51,26 @@ export default function CheckoutPage() {
   const handleConfirm = async () => {
     if (alreadyPaid || total === 0) return
 
-    const { error } = await supabase.from('Payments').insert({
-      table_id: tableId,
-      user_name: userName,
-      amount_paid: total,
-    })
+    try {
+      const res = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: total,
+          tableId,
+          userName,
+        }),
+      })
 
-    if (error) {
-      console.error('Payment insert failed:', error)
-      return
+      const { url } = await res.json()
+      if (url) {
+        window.location.href = url
+      }
+    } catch (err) {
+      console.error('Stripe session error:', err)
     }
-
-    localStorage.setItem('latestTotal', total.toString())
-    router.push(`/table/${tableId}/success?user=${encodeURIComponent(userName)}`)
   }
 
   return (
