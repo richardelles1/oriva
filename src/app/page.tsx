@@ -1,15 +1,20 @@
-'use client';
+'use client'
+
+import { useRouter } from 'next/navigation'
+import TabithaPose from '@/components/ui/TabithaLanding'
 
 export default function Home() {
+  const router = useRouter()
+
   return (
     <main className="relative min-h-screen bg-gradient-to-b from-indigo-50 to-white px-6 py-16 text-gray-900 font-sans overflow-hidden">
       {/* 🎊 Floating Confetti Emojis */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         {Array.from({ length: 20 }).map((_, i) => {
-          const left = Math.floor(Math.random() * 100);
-          const delay = Math.random() * 10;
-          const duration = 8 + Math.random() * 8;
-          const emoji = ['🎉', '🍕', '🍻', '💸'][i % 4];
+          const left = Math.floor(Math.random() * 100)
+          const delay = Math.random() * 10
+          const duration = 8 + Math.random() * 8
+          const emoji = ['🎉', '🍕', '🍻', '💸'][i % 4]
 
           return (
             <span
@@ -24,12 +29,15 @@ export default function Home() {
             >
               {emoji}
             </span>
-          );
+          )
         })}
       </div>
 
       {/* Hero Section */}
       <section className="relative z-10 text-center mb-20">
+        {/* 🐇 Tabitha Pose */}
+        <TabithaPose className="w-48 mx-auto mb-6" />
+
         <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight leading-tight text-gray-900">
           <span className="block mb-2">Scan & Split Your Bill</span>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 drop-shadow">
@@ -50,7 +58,10 @@ export default function Home() {
           { icon: '📱', title: 'No App Download Needed', desc: 'Scan the QR. Claim your meal. Pay and go.' },
           { icon: '🧾', title: 'Receipts for Everyone', desc: 'Instant digital receipts, emailed or saved on the spot.' },
         ].map((f, i) => (
-          <div key={i} className="flex items-start gap-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition duration-300">
+          <div
+            key={i}
+            className="flex items-start gap-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition duration-300"
+          >
             <div className="text-3xl">{f.icon}</div>
             <div>
               <h2 className="text-xl font-bold">{f.title}</h2>
@@ -69,18 +80,21 @@ export default function Home() {
           <li>Pay your share. Get a receipt. You're done!</li>
         </ol>
 
+        {/* CTA Button: Routes to Join Page */}
         <div className="mt-12 relative flex justify-center">
           {/* Glowing animated ring */}
           <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
             <div className="animate-spin-slow w-64 h-64 rounded-full bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 opacity-40 blur-3xl" />
           </div>
 
-          {/* CTA Button */}
-          <button className="relative z-10 px-8 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-purple-600 hover:to-indigo-600 text-white font-semibold text-lg shadow-lg transform hover:scale-105 transition duration-300">
-            🚀 Try Tabbit Now
+          <button
+            onClick={() => router.push('/table/join')}
+            className="relative z-10 px-8 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-purple-600 hover:to-indigo-600 text-white font-semibold text-lg shadow-lg transform hover:scale-105 transition duration-300"
+          >
+            🚀 Start Demo
           </button>
         </div>
       </section>
     </main>
-  );
+  )
 }
