@@ -1,7 +1,7 @@
 'use client'
 
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import TabithaPose from '@/components/ui/TabithaLanding'
 
 export default function Home() {
   const router = useRouter()
@@ -35,8 +35,14 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative z-10 text-center mb-20">
-        {/* 🐇 Tabitha Pose */}
-        <TabithaPose className="w-48 mx-auto mb-6" />
+        {/* 🐇 Tabitha Rabbit Jump Image */}
+        <Image
+          src="/tabitha_jump2.png"
+          alt="Tabitha Rabbit jumping"
+          width={192}
+          height={192}
+          className="mx-auto mb-6"
+        />
 
         <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight leading-tight text-gray-900">
           <span className="block mb-2">Scan & Split Your Bill</span>

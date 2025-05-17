@@ -1,34 +1,33 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-04-30.basil' as const,
+  
 })
 
-export async function POST(req: Request) {
-  const body = await req.json()
-  const { amount, tableId, userName } = body
+export async function POST(req: NextRequest) {
+  const { amount, userName, tableId } = await req.json()
 
-  try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [{
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: [
+      {
         price_data: {
           currency: 'usd',
-          product_data: { name: `Payment by ${userName} for Table ${tableId}` },
-          unit_amount: amount,
+          product_data: {
+            name: `Tabbit Bill for ${userName}`,
+          },
+          unit_amount: Math.round(amount * 100),
         },
         quantity: 1,
-      }],
-      mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/table/${tableId}/success?user=${encodeURIComponent(userName)}&amount=${amount}`,
+      },
+    ],
+    mode: 'payment',
+    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/table/${tableId}/success?userName=${encodeURIComponent(
+      userName
+    )}&amount=${amount}&tableId=${tableId}`,
+    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/table/${tableId}/checkout`,
+  })
 
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/table/${tableId}/checkout?user=${userName}`,
-    })
-
-    return NextResponse.json({ sessionId: session.id })
-  } catch (err) {
-    console.error('Stripe Error:', err)
-    return NextResponse.json({ error: 'Stripe session failed' }, { status: 500 })
-  }
+  return NextResponse.json({ url: session.url })
 }
