@@ -2,122 +2,103 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Sparkles } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 
 export default function JoinTablePage() {
-  const [code, setCode] = useState('')
-  const [name, setName] = useState('')
   const router = useRouter()
+  const [name, setName] = useState('')
+  const [code, setCode] = useState('')
 
-  const handleJoin = () => {
-    if (code.trim() && name.trim()) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (name && code) {
       router.push(`/table/${code}/claim?user=${encodeURIComponent(name)}`)
     }
   }
 
+  const handleRipple = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const button = e.currentTarget
+    const circle = document.createElement('span')
+    const diameter = Math.max(button.clientWidth, button.clientHeight)
+    const radius = diameter / 2
+    circle.style.width = circle.style.height = `${diameter}px`
+    circle.style.left = `${e.clientX - button.offsetLeft - radius}px`
+    circle.style.top = `${e.clientY - button.offsetTop - radius}px`
+    circle.classList.add('ripple')
+    const ripple = button.getElementsByClassName('ripple')[0]
+    if (ripple) {
+      ripple.remove()
+    }
+    button.appendChild(circle)
+  }
+
   return (
-    <main className="min-h-screen bg-[#0B0F1C] text-white px-6 py-16 font-sans relative overflow-hidden">
-      {/* ✨ Floating sparkles */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        {Array.from({ length: 18 }).map((_, i) => {
-          const left = Math.floor(Math.random() * 100)
-          const delay = Math.random() * 10
-          const duration = 6 + Math.random() * 8
-          const emoji = ['✨', '🌟', '💫', '🪄'][i % 4]
-          return (
-            <span
-              key={i}
-              className="absolute text-xl animate-float"
-              style={{
-                left: `${left}%`,
-                bottom: `-${Math.random() * 20}vh`,
-                animationDelay: `${delay}s`,
-                animationDuration: `${duration}s`,
-              }}
-            >
-              {emoji}
-            </span>
-          )
-        })}
-      </div>
-
+    <main className="min-h-screen bg-[#0B0F1C] flex flex-col items-center justify-center px-4 py-12 text-white font-sans">
       {/* Logo */}
-      <div className="mb-8 flex justify-center relative z-10">
-        <img src="/oriva_logo_official.png" alt="Oriva Logo" className="h-20 md:h-24" />
-      </div>
+      <Image
+        src="/oriva_logo_official.png"
+        alt="Oriva Logo"
+        width={240}
+        height={80}
+        className="mb-8 h-20 md:h-24 object-contain"
+        priority
+      />
 
-      {/* Hero Header */}
-      <section className="relative z-10 text-center mb-16">
-        <h1 className="text-5xl md:text-6xl font-serif font-semibold text-transparent bg-clip-text
-                       bg-[linear-gradient(to_right,#ffffff,#fff7cc,#FFD28F,#fff7cc,#ffffff)]
-                       bg-[length:200%_100%] bg-repeat animate-shimmer-strong">
-          Scan & Join Your Table
-        </h1>
-        <p className="mt-4 text-lg text-gray-300 max-w-xl mx-auto">
-          Enter your name and table code to split your bill with elegance.
-        </p>
-      </section>
+      {/* Hero Heading with shimmer */}
+      <h1 className="text-3xl md:text-4xl font-serif mb-6 bg-gradient-to-r from-white via-[#FFD28F] to-white bg-clip-text text-transparent animate-shimmer-strong">
+        Join Your Table
+      </h1>
 
-      {/* Join Table Card */}
-      <section className="relative z-10 max-w-xl mx-auto rounded-2xl bg-[#111827]/90 backdrop-blur-md border border-[#FFD28F]/60 p-6 md:p-8 ring-1 ring-[#FFD28F]/30 shadow-[0_0_40px_8px_rgba(255,210,143,0.2)] transition-all duration-300">
-        <div className="flex items-center justify-center mb-6">
-          <div className="flex-1 border-t border-white/20" />
-          <h2 className="px-4 text-3xl font-bold text-amber-200 tracking-wide uppercase">
-            Join Table
-          </h2>
-          <div className="flex-1 border-t border-white/20" />
-        </div>
-
-        <div className="space-y-4">
-          <label className="block text-base md:text-lg font-medium text-white/80">Your Name</label>
-          <Input
+      {/* Form Card */}
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md bg-[#111624] bg-opacity-80 backdrop-blur-md rounded-2xl p-6 md:p-8 ring-1 ring-[#FFD28F]/30 shadow-[0_0_40px_8px_rgba(255,210,143,0.2)] animate-fade-in-up"
+      >
+        <div className="mb-4">
+          <label className="block text-sm mb-2" htmlFor="name">
+            Your Name
+          </label>
+          <input
+            id="name"
+            type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Jordan"
-            className="bg-white/10 text-white placeholder-white/40 border-white/20 focus:ring-2 focus:ring-amber-300"
+            className="w-full px-4 py-2 rounded-md bg-[#1A1F2E] text-white border border-[#FFD28F]/20 focus:outline-none focus:ring-2 focus:ring-[#FFD28F]/40"
+            required
+            placeholder="e.g. Taylor"
           />
+        </div>
 
-          <label className="block text-base md:text-lg font-medium text-white/80">Table Code</label>
-          <Input
+        <div className="mb-6">
+          <label className="block text-sm mb-2" htmlFor="code">
+            Table Code
+          </label>
+          <input
+            id="code"
+            type="text"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="e.g. A1B2C3"
-            className="bg-white/10 text-white placeholder-white/40 border-white/20 focus:ring-2 focus:ring-amber-300"
+            className="w-full px-4 py-2 rounded-md bg-[#1A1F2E] text-white border border-[#FFD28F]/20 focus:outline-none focus:ring-2 focus:ring-[#FFD28F]/40 uppercase"
+            required
+            placeholder="e.g. A1B2"
           />
+        </div>
 
-          <Button
-            onClick={handleJoin}
-            className="mt-6 w-full text-lg font-semibold rounded-xl px-6 py-3 
-                       bg-[#FFCC88] hover:bg-[#FEC56B] text-black 
-                       shadow-inner shadow-white/30 
-                       transition-transform duration-300 ease-out
-                       hover:-translate-y-1 hover:scale-[1.015]
-                       focus:ring-2 focus:ring-offset-2 focus:ring-[#FFCC88]"
-          >
-            Enter the Flow
-          </Button>
-        </div>
-      </section>
+        {/* CTA Button */}
+    <button
+  type="submit"
+  onClick={handleRipple}
+  className="relative z-10 w-full overflow-hidden rounded-full bg-[#FFCC88] px-6 py-3 text-base font-normal text-[#0B0F1C] shadow-inner ring-1 ring-[#FFD28F]/60 transition duration-300 ease-in-out focus:outline-none active:scale-100 btn-textured hover:shadow-[0_0_12px_3px_rgba(255,204,136,0.4)] will-change-transform"
+>
+  <span className="relative z-10 font-serif font-normal tracking-wide text-[15px] antialiased">
+    Start Your Split
+  </span>
+  <span className="absolute inset-0 animate-sparkle pointer-events-none" />
+</button>
 
-      {/* Why Join Section */}
-      <section className="relative z-10 max-w-2xl mx-auto mt-20 rounded-2xl bg-[#111827]/90 backdrop-blur-md border border-[#FFD28F]/60 p-6 md:p-8 ring-1 ring-[#FFD28F]/30 shadow-[0_0_40px_8px_rgba(255,210,143,0.2)] transition-all duration-300">
-        <div className="flex items-center justify-center mb-6">
-          <div className="flex-1 border-t border-white/20" />
-          <h2 className="px-4 text-3xl font-bold text-amber-200 tracking-wide uppercase">
-            Why Join?
-          </h2>
-          <div className="flex-1 border-t border-white/20" />
-        </div>
-        <div className="flex items-start gap-4 text-white">
-          <Sparkles className="w-6 h-6 text-amber-300 mt-1 flex-shrink-0" />
-          <p className="text-sm leading-relaxed text-white/80">
-            Oriva transforms the end of your meal into a moment of ease. Skip the math, avoid the awkwardness,
-            and join your friends in one elegant tap. The flow starts here.
-          </p>
-        </div>
-      </section>
+
+
+      </form>
     </main>
   )
 }

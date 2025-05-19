@@ -3,9 +3,7 @@
 import { useSearchParams, useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabase'
-import { Button } from '@/components/ui/button'
-import Confetti from '@/components/ui/Confetti'
-import TabithaSuccess from '@/components/ui/TabithaSuccess'
+import Image from 'next/image'
 
 export default function SuccessPage() {
   const searchParams = useSearchParams()
@@ -20,7 +18,6 @@ export default function SuccessPage() {
     const savePayment = async () => {
       if (!user || !amount || isSaved) return
 
-      // Check for existing payment
       const { data: existing } = await supabase
         .from('Payments')
         .select('*')
@@ -44,23 +41,41 @@ export default function SuccessPage() {
   }, [tableId, user, amount, isSaved])
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center px-4 bg-gradient-to-br from-white to-green-100">
-      <Confetti />
-      <TabithaSuccess />
+    <main className="min-h-screen bg-[#0B0F1C] px-4 py-12 text-white font-sans flex flex-col items-center justify-center text-center">
+      {/* Oriva Logo */}
+      <div className="mb-6">
+        <Image
+          src="/oriva_logo_official.png"
+          alt="Oriva Logo"
+          width={160}
+          height={160}
+          className="h-20 md:h-24 object-contain"
+        />
+      </div>
 
-      <h1 className="text-4xl font-bold mt-4">🎉 Payment Successful!</h1>
+      {/* Success Message */}
+      <h1 className="text-4xl md:text-5xl font-serif bg-gradient-to-r from-white via-[#FFD28F] to-white bg-clip-text text-transparent animate-shimmer-strong mb-4">
+        Payment Complete
+      </h1>
 
-      <p className="text-lg mt-2">
-        Thanks <span className="font-semibold">{user}</span>, your payment of <span className="font-semibold">${amount.toFixed(2)}</span> has been received.
+      <p className="text-lg font-serif text-white/90 mb-1">
+        Thank you, <strong>{user}</strong>.
+      </p>
+      <p className="text-lg font-serif text-white/90">
+        Your payment of <strong>${amount.toFixed(2)}</strong> has been received.
       </p>
 
-      <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-        Please wait for your server to release the table once everyone has paid.
+      <p className="text-sm text-white/60 mt-6 max-w-sm">
+        Once everyone has finished, your server will close the table. You can view the final summary anytime below.
       </p>
 
-      <Button onClick={() => router.push(`/table/${tableId}/summary`)} className="mt-6 glow">
-        View Table Summary
-      </Button>
-    </div>
+      <button
+        onClick={() => router.push(`/table/${tableId}/summary`)}
+        className="mt-8 relative z-10 overflow-hidden rounded-full bg-[#FFCC88] px-8 py-3 text-[15px] text-[#0B0F1C] shadow-inner ring-1 ring-[#FFD28F]/60 hover:shadow-[0_0_12px_3px_rgba(255,204,136,0.4)] transition duration-300 ease-in-out font-serif btn-textured"
+      >
+        <span className="relative z-10">View Table Summary</span>
+        <span className="absolute inset-0 animate-sparkle pointer-events-none" />
+      </button>
+    </main>
   )
 }

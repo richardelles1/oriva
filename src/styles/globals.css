@@ -2,32 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 🎈 Floating emoji animation */
-@keyframes float {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(120vh);
+/* ----------------------------------
+   Ripple Animation
+---------------------------------- */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 600ms linear;
+  background-color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
     opacity: 0;
   }
 }
 
-.animate-float {
-  animation: float 6s linear infinite;
-}
-
-/* ✨ Strong shimmer for hero header */
+/* ----------------------------------
+   Shimmer Animation (Right to Left)
+---------------------------------- */
 @keyframes shimmer-strong {
   0% {
-    background-position: 200% 0;
+    background-position: 500% 0;
   }
   100% {
-    background-position: -200% 0;
+    background-position: -500% 0;
   }
 }
 
 .animate-shimmer-strong {
-  animation: shimmer-strong 6s ease-in-out infinite;
+  background-size: 200% auto;
+  animation: shimmer-strong 16s linear infinite;
+}
+
+/* ----------------------------------
+   Sparkle Animation Overlay
+---------------------------------- */
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.animate-sparkle {
+  animation: sparkle 2.5s infinite ease-in-out;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+}
+
+/* ----------------------------------
+   Button Texture Overlay
+---------------------------------- */
+.btn-textured {
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.06) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 20px 20px;
 }

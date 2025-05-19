@@ -1,89 +1,80 @@
 'use client'
 
-import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
 import { supabase } from '@/utils/supabase'
+import Image from 'next/image'
+
+interface Payment {
+  user_name: string
+  amount_paid: number
+  timestamp: string
+}
 
 export default function SummaryPage() {
-  const params = useParams()
-  const router = useRouter()
-
-  const tableId = params.tableId as string
-
-  const [payments, setPayments] = useState<any[]>([])
-  const [items, setItems] = useState<any[]>([])
+  const { tableId } = useParams()
+  const [payments, setPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { data: itemsData, error: itemsError } = await supabase
-        .from('Items')
-        .select('*')
-        .eq('table_id', tableId)
-
-      const { data: paymentsData, error: paymentsError } = await supabase
+    const fetchPayments = async () => {
+      const { data, error } = await supabase
         .from('Payments')
         .select('*')
         .eq('table_id', tableId)
+        .order('timestamp', { ascending: true })
 
-      if (itemsError || paymentsError) {
-        console.error('Fetch error:', itemsError || paymentsError)
-      } else {
-        setItems(itemsData || [])
-        setPayments(paymentsData || [])
+      if (!error && data) {
+        setPayments(data as Payment[])
       }
-
       setLoading(false)
     }
 
-    fetchData()
+    if (tableId) fetchPayments()
   }, [tableId])
 
-  const grandTotal = items.reduce((sum, item) => sum + item.price, 0)
-  const paidTotal = payments.reduce((sum, p) => sum + p.amount_paid, 0)
-  const fullyPaid = grandTotal > 0 && paidTotal >= grandTotal
+  const totalPaid = payments.reduce((sum, p) => sum + p.amount_paid, 0)
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-indigo-50 to-white flex items-center justify-center px-6 py-16 font-sans text-gray-900">
-      <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-md text-center">
-        <h1 className="text-3xl font-extrabold mb-6">📋 Table Summary</h1>
+    <main className="min-h-screen bg-[#0B0F1C] px-4 py-12 text-white font-sans">
+      <div className="flex justify-center mb-6">
+        <Image
+          src="/oriva_logo_official.png"
+          alt="Oriva Logo"
+          width={160}
+          height={160}
+          className="h-20 md:h-24 object-contain"
+        />
+      </div>
 
-        {loading ? (
-          <p className="text-gray-500">Loading summary...</p>
-        ) : (
-          <>
-            <ul className="mb-6 text-left text-gray-800 space-y-2">
+      <h1 className="text-3xl md:text-4xl font-serif text-center mb-4 bg-gradient-to-r from-white via-[#FFD28F] to-white bg-clip-text text-transparent animate-shimmer-strong">
+        Table Summary
+      </h1>
+
+      {loading ? (
+        <p className="text-center text-white/70">Loading payment data...</p>
+      ) : (
+        <div className="max-w-xl mx-auto bg-[#111624]/70 rounded-2xl ring-1 ring-[#FFD28F]/30 shadow-[0_0_30px_6px_rgba(255,210,143,0.1)] p-6 md:p-8 backdrop-blur-md animate-fade-in-up">
+          {payments.length === 0 ? (
+            <p className="text-center text-white/60">No payments made yet.</p>
+          ) : (
+            <ul className="divide-y divide-white/10">
               {payments.map((p, i) => (
-                <li key={i} className="flex justify-between">
-                  <span>{p.user_name}</span>
+                <li key={i} className="py-3 flex justify-between text-white/90">
+                  <span className="font-serif">{p.user_name}</span>
                   <span>${p.amount_paid.toFixed(2)}</span>
                 </li>
               ))}
             </ul>
+          )}
 
-            <p className="text-lg font-semibold mb-2">
-              Total Paid: ${paidTotal.toFixed(2)} / ${grandTotal.toFixed(2)}
+          <div className="mt-6 pt-4 border-t border-white/20 text-center">
+            <p className="font-serif text-lg text-white">
+              Total Paid: <strong>${totalPaid.toFixed(2)}</strong>
             </p>
-
-            {fullyPaid ? (
-              <div className="text-green-600 font-bold mb-4">🎉 All payments complete!</div>
-            ) : (
-              <div className="text-yellow-600 mb-4">⏳ Waiting on remaining guests...</div>
-            )}
-
-            <p className="text-sm text-gray-500 mb-8">
-              Your server will close the table once all guests have paid.
-            </p>
-
-            <button
-              onClick={() => router.push('/')}
-              className="px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg shadow transition"
-            >
-              🏠 Return Home
-            </button>
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
