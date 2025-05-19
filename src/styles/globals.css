@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* your custom keyframes here */
+/* 🎈 Floating emoji animation */
 @keyframes float {
   0% {
     transform: translateY(0);
@@ -16,4 +16,18 @@
 
 .animate-float {
   animation: float 6s linear infinite;
+}
+
+/* ✨ Strong shimmer for hero header */
+@keyframes shimmer-strong {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer-strong {
+  animation: shimmer-strong 6s ease-in-out infinite;
 }

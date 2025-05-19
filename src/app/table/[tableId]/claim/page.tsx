@@ -35,7 +35,6 @@ export default function ClaimPage() {
       } else {
         setItems(data as Item[])
 
-        // mark any items this user already claimed
         const myClaims = data
           .filter((item: Item) => item.is_selected_by?.includes(user))
           .map((item: Item) => item.id)
@@ -75,7 +74,7 @@ export default function ClaimPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-indigo-50 to-white px-6 py-16 text-gray-900 font-sans">
+    <main className="min-h-screen bg-gradient-to-b from-indigo-50 to-white px-6 py-16 text-gray-900 font-sans overflow-hidden">
       <h1 className="text-3xl font-extrabold text-center mb-10">🍽️ Select Your Dishes</h1>
 
       {loading ? (
@@ -84,17 +83,17 @@ export default function ClaimPage() {
         <p className="text-center text-gray-500">No items found for this table.</p>
       ) : (
         <>
-          <ul className="max-w-2xl mx-auto grid sm:grid-cols-2 gap-6">
+          <ul className="max-w-2xl mx-auto grid sm:grid-cols-2 gap-6 transition-all duration-300">
             {items.map((item) => {
               const isClaimed = claimedItems.includes(item.id)
               return (
                 <li
                   key={item.id}
                   onClick={() => toggleClaim(item)}
-                  className={`cursor-pointer bg-white p-5 rounded-2xl border transition duration-300 ${
+                  className={`cursor-pointer p-5 rounded-2xl border transition-all duration-200 ease-in-out transform ${
                     isClaimed
                       ? 'border-purple-500 bg-purple-50 shadow-lg scale-[1.02]'
-                      : 'border-gray-200 hover:shadow-md'
+                      : 'border-gray-200 bg-white hover:shadow-md'
                   }`}
                 >
                   <div className="flex justify-between items-center">
@@ -121,7 +120,9 @@ export default function ClaimPage() {
 
                 <button
                   onClick={() =>
-                    router.push(`/table/${tableId}/checkout?user=${encodeURIComponent(user)}`)
+                    router.push(
+                      `/table/${tableId}/checkout?user=${encodeURIComponent(user)}`
+                    )
                   }
                   className="relative z-10 px-8 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold text-lg shadow-lg transform hover:scale-105 transition duration-300"
                 >
