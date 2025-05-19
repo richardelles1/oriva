@@ -35,14 +35,14 @@ export default function JoinTablePage() {
   return (
     <main className="min-h-screen bg-[#0B0F1C] flex flex-col items-center justify-center px-4 py-12 text-white font-sans">
       {/* Logo */}
-      <Image
-        src="/oriva_logo_official.png"
-        alt="Oriva Logo"
-        width={240}
-        height={80}
-        className="mb-8 h-20 md:h-24 object-contain"
-        priority
-      />
+    <Image
+  src="/oriva_logo_official.png"
+  alt="Oriva Logo"
+  width={160}
+  height={160}
+  className="h-20 md:h-24 object-contain mx-auto mb-6"
+/>
+
 
       {/* Hero Heading with shimmer */}
       <h1 className="text-3xl md:text-4xl font-serif mb-6 bg-gradient-to-r from-white via-[#FFD28F] to-white bg-clip-text text-transparent animate-shimmer-strong">
