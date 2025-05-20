@@ -1,69 +1,77 @@
-// /src/app/table/join/page.tsx
-
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 export default function JoinPage() {
   const router = useRouter()
   const [name, setName] = useState('')
   const [tableCode, setTableCode] = useState('')
 
-  const handleJoin = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
     if (!name || !tableCode) return
     router.push(`/table/${tableCode}/claim?user=${encodeURIComponent(name)}`)
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-4 py-10">
-      {/* ✅ Local Oriva logo with adjusted spacing */}
-   <img
-  src="/oriva_logo_official.png"
-  alt="Oriva Logo"
-  width="160"
-  height="48"
-  className="object-contain mx-auto drop-shadow-md"
-/>
-
-
-      <div className="max-w-md w-full bg-[#101324] border border-[#FFD28F]/30 rounded-xl p-6 shadow-[0_0_40px_8px_rgba(255,210,143,0.2)] ring-1 ring-[#FFD28F]/30 animate-fade-in-up">
-        <h1 className="text-center text-2xl md:text-3xl font-semibold text-[#FFD28F] mb-6 -mt-2">
-          Join Your Table
-        </h1>
-
-        <div className="space-y-4">
-          <div>
-            <label className="text-sm text-white/80">Your Name</label>
-            <input
-              type="text"
-              placeholder="e.g. Taylor"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full mt-1 px-4 py-2 rounded-md bg-[#0B0F1C] border border-white/10 focus:outline-none focus:ring-2 focus:ring-[#FFD28F]"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm text-white/80">Table Code</label>
-            <input
-              type="text"
-              placeholder="E.G. A1B2"
-              value={tableCode}
-              onChange={(e) => setTableCode(e.target.value)}
-              className="w-full mt-1 px-4 py-2 rounded-md bg-[#0B0F1C] border border-white/10 focus:outline-none focus:ring-2 focus:ring-[#FFD28F]"
-            />
-          </div>
-
-          <button
-            onClick={handleJoin}
-            className="w-full mt-4 rounded-full bg-[#FFCC88] text-[#0B0F1C] font-semibold py-2 transition-all duration-200 hover:bg-[#FEC56B] hover:-translate-y-1 shadow-inner animate-glow-ring"
-          >
-            Start Your Split
-          </button>
-        </div>
+    <main className="min-h-screen bg-[#0B0F1C] text-white px-6 py-12 font-sans">
+      {/* Logo */}
+      <div className="flex justify-center mt-2 mb-4">
+        <img
+          src="/oriva_logo_official.png"
+          alt="Oriva Logo"
+          width="160"
+          height="48"
+          className="drop-shadow-md"
+        />
       </div>
+
+      {/* Headline */}
+      <h1 className="text-center text-3xl md:text-4xl font-serif font-semibold bg-gradient-to-r from-white via-[#FFD28F] to-white bg-clip-text text-transparent animate-shimmer-strong mb-6">
+        Join Your Table
+      </h1>
+
+      {/* Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-md mx-auto bg-white/5 backdrop-blur-md rounded-2xl p-6 ring-1 ring-[#FFD28F]/30 shadow-[0_0_40px_8px_rgba(255,210,143,0.2)] space-y-4 animate-fade-in-up"
+      >
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-white mb-1">
+            Your Name
+          </label>
+          <input
+            id="name"
+            type="text"
+            placeholder="e.g. Taylor"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-2 rounded-md bg-[#0B0F1C] border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#FFD28F]"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="code" className="block text-sm font-medium text-white mb-1">
+            Table Code
+          </label>
+          <input
+            id="code"
+            type="text"
+            placeholder="e.g. A1B2"
+            value={tableCode}
+            onChange={(e) => setTableCode(e.target.value)}
+            className="w-full px-4 py-2 rounded-md bg-[#0B0F1C] border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#FFD28F]"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full rounded-full bg-[#FFCC88] px-6 py-3 text-[#0B0F1C] font-serif font-medium shadow-inner transition hover:bg-[#FEC56B] hover:-translate-y-1"
+        >
+          Start Your Split
+        </button>
+      </form>
     </main>
   )
 }
