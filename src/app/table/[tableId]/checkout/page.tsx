@@ -1,9 +1,11 @@
+
 'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import { loadStripe } from '@stripe/stripe-js'
-import supabase from '@/utils/supabase/client'
+import { supabase } from '@/utils/supabase'
+import Image from 'next/image'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
@@ -56,9 +58,10 @@ export default function CheckoutPage() {
   })
 
   const isEvenSplit = filteredItems.length === 0 && items.length > 0
+  const guestCount = 5 // TODO: replace with real dynamic count
 
   const subtotal = isEvenSplit
-    ? items.reduce((sum, item) => sum + item.price, 0) / 5 // assume 5 guests
+    ? items.reduce((sum, item) => sum + item.price, 0) / guestCount
     : filteredItems.reduce((sum, item) => {
         try {
           const claimedBy =
@@ -87,6 +90,7 @@ export default function CheckoutPage() {
   }
 
   const handleConfirmAndPay = async () => {
+    if (grandTotal <= 0) return
     setIsPaying(true)
 
     try {
@@ -117,6 +121,7 @@ export default function CheckoutPage() {
 
   return (
     <main className="min-h-screen bg-[#0B0F1C] px-4 py-12 text-white font-sans flex flex-col items-center">
+      <Image src="/oriva_logo_official.png" alt="Oriva Logo" width={140} height={32} className="mb-8" />
       <h1 className="text-3xl md:text-4xl font-serif mb-8 bg-gradient-to-r from-white via-[#FFD28F] to-white bg-clip-text text-transparent animate-shimmer-strong">
         {userName}&rsquo;s Selection
       </h1>
@@ -137,7 +142,7 @@ export default function CheckoutPage() {
                 if (!isEvenSplit && claimedBy.length > 0) {
                   share = item.price / claimedBy.length
                 } else if (isEvenSplit) {
-                  share = item.price / 5 // evenly split among 5 diners
+                  share = item.price / guestCount
                 }
               } catch {
                 claimedBy = []
