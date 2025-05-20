@@ -1,32 +1,46 @@
-// /src/app/api/create-checkout-session/route.ts
-
 import Stripe from 'stripe'
-import { NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 })
 
-export async function POST(req: Request) {
-  const { amount, tableId, userName } = await req.json()
+export async function POST(req: NextRequest) {
+  const body = await req.json()
+  const { amount, tableId, userName } = body
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    line_items: [
-      {
-        price_data: {
-          currency: 'usd',
-          product_data: { name: `Oriva Payment – ${userName}` },
-          unit_amount: Math.round(amount * 100),
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `Oriva Payment for ${userName}`,
+            },
+            unit_amount: Math.round(amount * 100),
+          },
+          quantity: 1,
         },
-        quantity: 1,
-      },
-    ],
-    mode: 'payment',
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/table/${tableId}/success?user=${userName}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/table/${tableId}/checkout?user=${userName}`,
-    metadata: { tableId, userName },
-  })
+      ],
+      mode: 'payment',
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/table/${tableId}/success?user=${encodeURIComponent(
+        userName
+      )}&amount=${amount}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/table/${tableId}/checkout?user=${encodeURIComponent(
+        userName
+      )}`,
+    })
 
-  return NextResponse.json({ id: session.id })
+    return new Response(JSON.stringify({ id: session.id }), {
+      status: 200,
+    })
+  } catch (err) {
+    console.error('Stripe Error:', err)
+    return new Response(
+      JSON.stringify({ error: 'Stripe session creation failed' }),
+      { status: 500 }
+    )
+  }
 }

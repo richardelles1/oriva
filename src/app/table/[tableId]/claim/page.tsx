@@ -63,7 +63,7 @@ export default function ClaimPage() {
   // Toggle Claim Logic
   // ------------------------------
   const toggleClaim = async (item: Item) => {
-    if (evenSplitCount !== null) return // disable claim if even split active
+    if (evenSplitCount !== null) return
 
     const isClaimed = claimedItems.includes(item.id)
     const newClaimList = isClaimed
@@ -94,7 +94,7 @@ export default function ClaimPage() {
   // ------------------------------
   const handleEvenSplit = () => {
     if (evenSplitCount !== null) {
-      setEvenSplitCount(null) // allow toggling off
+      setEvenSplitCount(null)
     } else {
       const input = prompt('How many people are splitting the bill evenly?')
       const count = input ? parseInt(input) : null
@@ -109,22 +109,26 @@ export default function ClaimPage() {
   // UI
   // ------------------------------
   return (
-    <main className="min-h-screen bg-[#0B0F1C] px-4 py-12 text-white font-sans pb-32">
-      {/* Logo */}
+    <main className="min-h-screen bg-[#0B0F1C] px-4 py-12 text-white font-sans pb-40">
+      {/* Local Logo */}
       <div className="flex justify-center mb-6">
         <Image
-          src="/oriva_logo_official.png"
+          src="/oriva_logo_official.PNG"
           alt="Oriva Logo"
           width={160}
-          height={160}
-          className="h-20 md:h-24 object-contain"
+          height={48}
+          priority
+          className="drop-shadow-md"
         />
       </div>
 
-      {/* Shimmering Header */}
+      {/* Headline */}
       <h1 className="text-3xl md:text-4xl font-serif text-center mb-8 bg-gradient-to-r from-white via-[#FFD28F] to-white bg-clip-text text-transparent animate-shimmer-strong">
         Select Your Dishes
       </h1>
+
+      {/* 🐇 Placeholder for Tabitha (e.g. right-side float or ambient idle pose) */}
+      {/* TODO: Insert Tabitha illustration here when stored in /public */}
 
       {/* Item Grid */}
       {loading ? (
@@ -165,9 +169,11 @@ export default function ClaimPage() {
                   <span className="text-sm">${item.price.toFixed(2)}</span>
                 </div>
                 {item.is_selected_by && item.is_selected_by.length > 0 && (
-                  <p className={`text-xs font-serif mt-1 ${
-                    isClaimed ? 'text-[#3C2F1B]/80' : 'text-white/60'
-                  }`}>
+                  <p
+                    className={`text-xs font-serif mt-1 ${
+                      isClaimed ? 'text-[#3C2F1B]/80' : 'text-white/60'
+                    }`}
+                  >
                     Claimed by: {item.is_selected_by.join(', ')}
                   </p>
                 )}
@@ -186,7 +192,7 @@ export default function ClaimPage() {
 
       {/* CTA Button */}
       {((claimedItems.length > 0 && evenSplitCount === null) || evenSplitCount !== null) && (
-        <div className="fixed bottom-6 inset-x-0 flex justify-center">
+        <div className="fixed bottom-6 inset-x-0 flex justify-center px-4 z-10">
           <button
             onClick={() =>
               router.push(

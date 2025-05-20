@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import { loadStripe } from '@stripe/stripe-js'
 import supabase from '@/utils/supabase/client'
-import { Button } from '@/components/ui/button'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
@@ -23,6 +22,9 @@ export default function CheckoutPage() {
 
   const [items, setItems] = useState<Item[]>([])
   const [isPaying, setIsPaying] = useState(false)
+  const [tipPercent, setTipPercent] = useState<number>(18)
+  const [customInput, setCustomInput] = useState('')
+  const [customMode, setCustomMode] = useState(false)
 
   useEffect(() => {
     async function fetchItems() {
@@ -41,7 +43,7 @@ export default function CheckoutPage() {
     fetchItems()
   }, [tableId])
 
-  const filteredItems = items.filter(item => {
+  const filteredItems = items.filter((item) => {
     try {
       const selectedBy =
         typeof item.is_selected_by === 'string'
@@ -53,7 +55,7 @@ export default function CheckoutPage() {
     }
   })
 
-  const total = filteredItems.reduce((sum, item) => {
+  const subtotal = filteredItems.reduce((sum, item) => {
     try {
       const claimedBy =
         typeof item.is_selected_by === 'string'
@@ -69,6 +71,9 @@ export default function CheckoutPage() {
     }
   }, 0)
 
+  const tipAmount = subtotal * (tipPercent / 100)
+  const grandTotal = subtotal + tipAmount
+
   const handleConfirmAndPay = async () => {
     setIsPaying(true)
 
@@ -77,7 +82,7 @@ export default function CheckoutPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: total,
+          amount: grandTotal,
           tableId,
           userName,
         }),
@@ -98,17 +103,24 @@ export default function CheckoutPage() {
     }
   }
 
+  const handleCustomSubmit = () => {
+    const value = parseFloat(customInput)
+    if (!isNaN(value) && value >= 0 && value <= 100) {
+      setTipPercent(value)
+      setCustomMode(false)
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#0B0F1C] px-4 py-12 text-white font-sans flex flex-col items-center">
-      <h1 className="text-3xl md:text-4xl font-serif mb-8 bg-gradient-to-r from-white via-[#FFD28F] to-white bg-clip-text text-transparent animate-shimmer">
-  {userName}&rsquo;s Selection
-</h1>
+      <h1 className="text-3xl md:text-4xl font-serif mb-8 bg-gradient-to-r from-white via-[#FFD28F] to-white bg-clip-text text-transparent animate-shimmer-strong">
+        {userName}&rsquo;s Selection
+      </h1>
 
-
-      <div className="w-full max-w-xl bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-[0_0_40px_8px_rgba(255,210,143,0.2)] ring-1 ring-[#FFD28F]/30 space-y-4">
+      <div className="w-full max-w-xl bg-white/5 backdrop-blur-md rounded-2xl p-6 shadow-[0_0_40px_8px_rgba(255,210,143,0.2)] ring-1 ring-[#FFD28F]/30 space-y-4 animate-fade-in-up">
         {filteredItems.length > 0 ? (
           <>
-            {filteredItems.map(item => {
+            {filteredItems.map((item) => {
               let claimedBy: string[] = []
               let share = item.price
 
@@ -127,34 +139,115 @@ export default function CheckoutPage() {
 
               return (
                 <div key={item.id} className="flex flex-col gap-1 text-white/90">
-                  <div className="flex justify-between">
-                    <span className="text-base font-medium">{item.item_name}</span>
-                    <span className="text-base font-medium">${share.toFixed(2)}</span>
+                  <div className="flex justify-between font-serif text-[17px]">
+                    <span>{item.item_name}</span>
+                    <span>${share.toFixed(2)}</span>
                   </div>
-                  <p className="text-sm text-white/60">
+                  <p className="text-sm text-white/60 font-serif italic">
                     Claimed by: {claimedBy.join(', ')}
                   </p>
                 </div>
               )
             })}
 
-            <hr className="border-t border-white/20 my-4" />
+            <hr className="border-t border-white/10 my-4" />
 
-            <div className="flex justify-between font-semibold text-lg text-white">
-              <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+            {/* Subtotal */}
+            <div className="flex justify-between font-serif text-lg text-white">
+              <span>Subtotal</span>
+              <span>${subtotal.toFixed(2)}</span>
             </div>
 
-            <Button
+            {/* Tip Selector */}
+            <div className="space-y-2">
+              <p className="text-sm text-white/60 font-serif">Choose a Tip</p>
+              <div className="flex flex-wrap gap-2">
+                {[15, 18, 20, 25].map((percent) => (
+                  <button
+                    key={percent}
+                    onClick={() => {
+                      setTipPercent(percent)
+                      setCustomMode(false)
+                    }}
+                    className={`px-4 py-2 rounded-full font-serif text-sm transition-all ${
+                      tipPercent === percent && !customMode
+                        ? 'bg-[#FFD28F] text-[#0B0F1C] shadow-md ring-2 ring-[#FFD28F]'
+                        : 'bg-white/10 text-white/80 hover:bg-[#FFD28F]/10'
+                    }`}
+                  >
+                    {percent}%
+                  </button>
+                ))}
+
+                {/* Custom Button */}
+                <button
+                  onClick={() => setCustomMode(true)}
+                  className={`px-4 py-2 rounded-full font-serif text-sm transition-all ${
+                    customMode
+                      ? 'bg-[#FFD28F] text-[#0B0F1C] shadow-md ring-2 ring-[#FFD28F]'
+                      : 'bg-white/10 text-white/80 hover:bg-[#FFD28F]/10'
+                  }`}
+                >
+                  Custom
+                </button>
+
+                {/* No Tip */}
+                <button
+                  onClick={() => {
+                    setTipPercent(0)
+                    setCustomMode(false)
+                  }}
+                  className={`px-4 py-2 rounded-full font-serif text-sm transition-all ${
+                    tipPercent === 0 && !customMode
+                      ? 'bg-[#FFD28F] text-[#0B0F1C] shadow-md ring-2 ring-[#FFD28F]'
+                      : 'bg-white/10 text-white/80 hover:bg-[#FFD28F]/10'
+                  }`}
+                >
+                  No Tip
+                </button>
+              </div>
+
+              {/* Custom Input */}
+              {customMode && (
+                <div className="flex gap-2 mt-2">
+                  <input
+                    type="number"
+                    placeholder="Enter %"
+                    value={customInput}
+                    onChange={(e) => setCustomInput(e.target.value)}
+                    className="w-24 px-3 py-1 rounded-md bg-[#0B0F1C] border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#FFD28F]"
+                  />
+                  <button
+                    onClick={handleCustomSubmit}
+                    className="px-3 py-1 rounded-md bg-[#FFD28F] text-[#0B0F1C] text-sm font-semibold hover:bg-[#FEC56B]"
+                  >
+                    Apply
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Tip + Total */}
+            <div className="flex justify-between font-serif text-base text-white/80 mt-2">
+              <span>Tip</span>
+              <span>${tipAmount.toFixed(2)}</span>
+            </div>
+
+            <div className="flex justify-between font-serif text-lg text-white">
+              <span>Total</span>
+              <span className="text-[#FFD28F] font-semibold">${grandTotal.toFixed(2)}</span>
+            </div>
+
+            <button
               onClick={handleConfirmAndPay}
-              disabled={isPaying || total === 0}
-              className="w-full bg-[#FFCC88] text-black text-lg hover:bg-[#FEC56B] hover:-translate-y-1 transition-all duration-300 shadow-inner"
+              disabled={isPaying || grandTotal === 0}
+              className="w-full rounded-full bg-[#FFCC88] text-[#0B0F1C] font-serif text-lg font-medium py-3 shadow-inner transition-all duration-300 hover:bg-[#FEC56B] hover:-translate-y-1"
             >
               {isPaying ? 'Processing...' : 'Confirm & Pay'}
-            </Button>
+            </button>
           </>
         ) : (
-          <p className="text-center text-white/70">
+          <p className="text-center text-white/70 font-serif italic">
             No items selected by <strong>{userName}</strong>.
           </p>
         )}
