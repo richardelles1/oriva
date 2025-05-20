@@ -44,12 +44,12 @@ export default function SuccessPage() {
     <main className="min-h-screen bg-[#0B0F1C] px-4 py-12 text-white font-sans flex flex-col items-center justify-center text-center">
       {/* Logo */}
       <div className="mb-6">
-        <Image
+      <img
   src="/oriva_logo_official.png"
   alt="Oriva Logo"
-  width={160}
-  height={160}
-  className="h-20 md:h-24 object-contain"
+  width="160"
+  height="48"
+  className="object-contain mx-auto drop-shadow-md"
 />
 
       </div>

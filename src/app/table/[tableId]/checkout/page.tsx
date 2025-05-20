@@ -121,7 +121,13 @@ export default function CheckoutPage() {
 
   return (
     <main className="min-h-screen bg-[#0B0F1C] px-4 py-12 text-white font-sans flex flex-col items-center">
-      <Image src="/oriva_logo_official.png" alt="Oriva Logo" width={140} height={32} className="mb-8" />
+      <img
+  src="/oriva_logo_official.png"
+  alt="Oriva Logo"
+  width="160"
+  height="48"
+  className="object-contain mx-auto drop-shadow-md"
+/>
       <h1 className="text-3xl md:text-4xl font-serif mb-8 bg-gradient-to-r from-white via-[#FFD28F] to-white bg-clip-text text-transparent animate-shimmer-strong">
         {userName}&rsquo;s Selection
       </h1>

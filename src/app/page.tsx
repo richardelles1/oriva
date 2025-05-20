@@ -10,7 +10,7 @@ export default function Home() {
       {/* Logo */}
       <div className="relative w-[260px] h-[110px] mx-auto mb-6">
         <Image
-          src="/oriva_logo_official.png
+          src="/oriva_logo_official.png"
           alt="Oriva Logo"
           fill
           priority

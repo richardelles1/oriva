@@ -19,14 +19,14 @@ export default function JoinPage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-4 py-10">
       {/* ✅ Local Oriva logo with adjusted spacing */}
-      <Image
-        src="/oriva_logo_official.PNG"
-        alt="Oriva logo"
-        width={160}
-        height={48}
-        priority
-        className="drop-shadow-md mb-6"
-      />
+   <img
+  src="/oriva_logo_official.png"
+  alt="Oriva Logo"
+  width="160"
+  height="48"
+  className="object-contain mx-auto drop-shadow-md"
+/>
+
 
       <div className="max-w-md w-full bg-[#101324] border border-[#FFD28F]/30 rounded-xl p-6 shadow-[0_0_40px_8px_rgba(255,210,143,0.2)] ring-1 ring-[#FFD28F]/30 animate-fade-in-up">
         <h1 className="text-center text-2xl md:text-3xl font-semibold text-[#FFD28F] mb-6 -mt-2">
