@@ -45,12 +45,13 @@ export default function SuccessPage() {
       {/* Logo */}
       <div className="mb-6">
         <Image
-          src="/oriva_logo_official.png"
-          alt="Oriva Logo"
-          width={180}
-          height={180}
-          className="h-24 md:h-28 object-contain"
-        />
+  src="/oriva_logo_official.png"
+  alt="Oriva Logo"
+  width={160}
+  height={160}
+  className="h-20 md:h-24 object-contain"
+/>
+
       </div>
 
       {/* Header */}
