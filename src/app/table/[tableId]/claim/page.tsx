@@ -105,7 +105,7 @@ export default function ClaimPage() {
     <main className="min-h-screen bg-[#0B0F1C] px-4 py-12 text-white font-sans pb-40">
       <div className="flex justify-center mb-6">
         <Image
-          src="/oriva_logo_official.PNG"
+          src="/oriva_logo_official.png"
           alt="Oriva Logo"
           width={160}
           height={48}
