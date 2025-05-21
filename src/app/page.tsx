@@ -19,7 +19,7 @@ export default function Home() {
       </div>
 
       {/* Animated Hero Header */}
-      <h1 className="text-center text-4xl md:text-5xl font-serif font-semibold mb-4 bg-gradient-to-r from-[#FFD27A] via-[#F5F1E6] to-[#FFD27A] text-transparent bg-clip-text animate-shimmer bg-[length:200%_auto]">
+      <h1 className="text-center text-4xl md:text-5xl font-serif font-semibold mb-4 bg-gradient-to-r from-[#FFD27A] via-[#F5F1E6] to-[#FFD27A] text-transparent bg-clip-text animate-shimmer-strong bg-[length:200%_auto]">
         Scan & Split Your Bill
       </h1>
 
@@ -100,8 +100,9 @@ export default function Home() {
             {/* CTA Button */}
             <div className="flex justify-center mt-8">
               <Link href="/table/join">
-                <button className="rounded-full border border-[#FFD27A] text-[#FFD27A] hover:bg-[#FFD27A]/10 hover:shadow-[0_0_10px_#FFD27A] transition-all duration-200 font-medium px-6 py-2">
-                  Enter the flow
+                <button className="rounded-full border border-[#FFD27A] text-[#FFD27A] hover:bg-[#FFD27A]/10 hover:shadow-[0_0_10px_#FFD27A] transition-all duration-200 font-medium px-6 py-2 relative overflow-hidden">
+                  <span className="relative z-10">Enter the flow</span>
+                  <span className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/10 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 </button>
               </Link>
             </div>

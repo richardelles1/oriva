@@ -37,14 +37,16 @@
 .animate-shimmer-strong {
   background-size: 200% auto;
   animation: shimmer-strong 16s linear infinite;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* ----------------------------------
    Sparkle Animation Overlay
 ---------------------------------- */
 @keyframes sparkle {
-  0%,
-  100% {
+  0%, 100% {
     opacity: 0.2;
   }
   50% {
