@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    appDir: true, // 💡 This tells Next.js to use /src/app
+    appDir: true,
   },
 }
 

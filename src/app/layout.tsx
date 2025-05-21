@@ -1,5 +1,4 @@
-// src/app/layout.tsx
-import './globals.css'
+import '../styles/globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -7,11 +6,7 @@ export const metadata: Metadata = {
   description: 'Scan & Split Your Bill — Fast, Fair, and Seamless',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>{children}</body>
